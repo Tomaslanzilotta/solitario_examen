@@ -7,7 +7,7 @@ pygame.init()
 pantalla = pygame.display.set_mode((1000,700))
 pygame.display.set_caption("Solitario Klondike")
 
-# Audio
+# Audio 
 inicializar_audio("recursos/Balatro Main Theme.mp3", 0.5)
 musica_activada = True
 

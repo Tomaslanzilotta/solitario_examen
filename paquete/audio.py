@@ -3,7 +3,11 @@ from pygame import mixer
 
 def inicializar_audio(musica_path: str, volumen: float = 0.5) -> None:
     """
-    Inicializa el mixer, carga la pista de fondo y la reproduce en bucle.
+    Inicializa el mixer de Pygame, carga la pista de fondo y la reproduce en bucle.
+
+    Param musica_path: ruta al archivo de audio (mp3, wav, etc.).
+    Param volumen: nivel de volumen entre 0.0 y 1.0 (por defecto, 0.5).
+    Return: None
     """
     mixer.init()
     mixer.music.load(musica_path)
@@ -12,8 +16,10 @@ def inicializar_audio(musica_path: str, volumen: float = 0.5) -> None:
 
 def toggle_music(musica_activa: bool) -> bool:
     """
-    Alterna el estado de la música (on/off).
-    Recibe el estado actual y devuelve el nuevo.
+    Alterna el estado de la música de fondo entre pausa y reproducción.
+
+    Param musica_activa: estado actual de la música (True = sonando).
+    Return: nuevo estado de la música después de alternar.
     """
     nueva = not musica_activa
     if nueva:

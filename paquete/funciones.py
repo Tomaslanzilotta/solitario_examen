@@ -16,6 +16,7 @@ RUTA_REVERSO = "recursos/img/reverso.jpg"
 # ——————————————
 # Funciones de mazo
 # ——————————————
+
 def crear_carta(ruta_imagen: str, palo: str, numero: int) -> dict:
     """
     Crea la ficha de datos de una carta *y* su superficie Pygame escalada.

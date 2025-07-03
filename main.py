@@ -11,7 +11,8 @@ pygame.display.set_caption("Solitario de Tomas")
 inicializar_audio("recursos/Balatro Main Theme.mp3", 0.5)
 random.seed(time.time())
 
-while True:
+while True:  #- Bucle infinito para permitir reiniciar el juego tras ganar/perder
+
     musica_activada = mostrar_menu(pantalla, True)
     nombre_jugador  = ingresar_nombre(pantalla)
 
@@ -26,13 +27,11 @@ while True:
     icono_on  = pygame.transform.scale(icono_on,  (40, 40))
     icono_off = pygame.transform.scale(icono_off, (40, 40))
 
+    #zonas clickeables para los controles del juego
     rect_sonido    = pygame.Rect(20, 640, 40, 40)
     rect_reiniciar = pygame.Rect(140, 640, 100, 40)
-
     rect_monton   = pygame.Rect(50, 30, 70, 120)
     rect_descarte = pygame.Rect(140, 30, 70, 120)
-
-    # Sin list-comprehension
     rects_fundacion = []
     for k in range(4):
         x = 400 + k * 90
@@ -51,7 +50,7 @@ while True:
                 sys.exit()
 
             if evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
-                mx, my = evento.pos
+                mx, my = evento.pos # guarda la posicion del mouse
 
                 if rect_sonido.collidepoint(mx, my):
                     musica_activada = toggle_music(musica_activada)
@@ -63,7 +62,7 @@ while True:
 
                 if rect_monton.collidepoint(mx, my):
                     click_en_mazo(mi_mazo)
-                    puntaje -= 1
+                    puntaje -= 5
                     continue
 
                 if mi_mazo["descarte"] and rect_descarte.collidepoint(mx, my):
@@ -73,16 +72,17 @@ while True:
                         puntaje += 10
                     else:
                         intentar_mover_descarte_a_pilas(mi_mazo)
-                        puntaje += 5
+                        puntaje == 0
                     continue
-
+                
+                #- Recorre fundaciones, intenta devolver la carta a una pila si esta fue clikeada/ si es valido.
                 for idx, rect in enumerate(rects_fundacion):
                     if rect.collidepoint(mx, my):
                         mover_desde_fundacion_a_pila(mi_mazo, idx)
                         break
 
                 bloque, origen = seleccionar_bloque(mi_mazo, mx, my)
-                if bloque:
+                if bloque: #se activa el modo de arrastre
                     bloque_seleccionado = bloque
                     indice_origen       = origen
                     drag_en_progreso    = True
@@ -90,7 +90,7 @@ while True:
 
             elif evento.type == pygame.MOUSEBUTTONUP and evento.button == 1 \
                 and drag_en_progreso:
-                mx, my = evento.pos
+                mx, my = evento.pos #permite saber dónde el jugador intenta soltar la carta o bloque.
 
                 if len(bloque_seleccionado) == 1:
                     carta = bloque_seleccionado[0]
@@ -105,13 +105,14 @@ while True:
 
                 bloque_seleccionado, indice_origen = mover_bloque(mi_mazo, bloque_seleccionado, 
                                                     indice_origen, mx, my)
-                drag_en_progreso = False
+                drag_en_progreso = False # se soltó el mouse.
 
             elif evento.type == pygame.MOUSEMOTION and drag_en_progreso:
                 posicion_mouse = evento.pos
 
         pantalla.fill(VERDE_FONDO)
 
+        #dibujar pilas cartas boca arriba/ boca abajo
         for i_pila, pila in enumerate(mi_mazo["pilas_cuadro"]):
             for j_carta, carta in enumerate(pila):
                 x = 50 + i_pila * 120
@@ -119,11 +120,12 @@ while True:
                 img = carta["superficie"] if carta["boca_arriba"] else img_reverso
                 pantalla.blit(img, (x, y))
 
-        if mi_mazo["monton"]:
+        if mi_mazo["monton"]: # dibuja el mazo dado vuelta
             pantalla.blit(img_reverso, (50, 30))
         if mi_mazo["descarte"]:
             pantalla.blit(mi_mazo["descarte"][-1]["superficie"], (140, 30))
 
+        #dibuja las fundaciones
         for k in range(4):
             x_f, y_f = rects_fundacion[k].topleft
             if mi_mazo["pilas_cimientos"][k]:
@@ -132,10 +134,10 @@ while True:
             else:
                 pygame.draw.rect(pantalla, BLANCO, (x_f, y_f, 70, 120), 2)
 
-        if drag_en_progreso and bloque_seleccionado:
+        if drag_en_progreso and bloque_seleccionado: 
             mx, my = posicion_mouse
             offset = 0
-            for carta in bloque_seleccionado:
+            for carta in bloque_seleccionado: #renderiza el bloque que arrastra
                 px = mx - 35
                 py = my + offset * 25 - 60
                 pantalla.blit(carta["superficie"], (px, py))
@@ -143,23 +145,24 @@ while True:
                 offset += 1
 
         pantalla.blit(icono_on if musica_activada else icono_off,
-                    rect_sonido.topleft)
+                    rect_sonido.topleft)# icono sonido
 
         pygame.draw.rect(pantalla, (0, 120, 200), rect_reiniciar,
-                    border_radius=5)
+                    border_radius=5)#botn riniciar 
         fuente_btn = pygame.font.SysFont(None, 28)
         pantalla.blit(
             fuente_btn.render("Reiniciar", True, (255, 255, 255)),
             rect_reiniciar.move(12, 8).topleft
         )
 
-        fuente_puntaje = pygame.font.SysFont(None, 28)
+        fuente_puntaje = pygame.font.SysFont(None, 28)#muestra el puntaje
         txt_puntaje = fuente_puntaje.render(f"Puntaje: {puntaje}",
                                             True, (255, 255, 255))
         pantalla.blit(txt_puntaje, (800, 650))
 
         pygame.display.update()
 
+        #victoria. Si todas las cartas fueron colocadas correctamente, finalizo la partida y retorno al menú.
         if jugador_gano(mi_mazo):
             finalizar_partida(pantalla, nombre_jugador, puntaje)
             ejecutando = False

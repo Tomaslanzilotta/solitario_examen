@@ -43,7 +43,7 @@ def mostrar_menu(pantalla: pygame.Surface,
     titulo_surf = fuente_titulo.render("Solitario Klondike", True, DORADO)
     en_menu = True
 
-    while en_menu:
+    while en_menu: #bucle activo hasta que el jugador presiona “Iniciar juego”.
         pantalla.fill(VERDE_FONDO)
         pantalla.blit(
             titulo_surf,

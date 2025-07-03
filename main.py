@@ -7,7 +7,7 @@ from paquete.logica import *
 # ——— Inicialización ———
 pygame.init()
 pantalla = pygame.display.set_mode((1000, 700))
-pygame.display.set_caption("Solitario Klondike")
+pygame.display.set_caption("Solitario de Tomas")
 inicializar_audio("recursos/Balatro Main Theme.mp3", 0.5)
 random.seed(time.time())
 
@@ -96,24 +96,20 @@ while True:
                     carta = bloque_seleccionado[0]
                     if intentar_mover_a_fundacion(mi_mazo, carta):
                         mi_mazo["pilas_cuadro"][indice_origen].remove(carta)
-                        destapar_tope_si_corresponde(
-                            mi_mazo["pilas_cuadro"], indice_origen
-                        )
+                        destapar_tope_si_corresponde(mi_mazo["pilas_cuadro"], indice_origen)
                         puntaje += 10
                         bloque_seleccionado = []
                         indice_origen       = None
                         drag_en_progreso    = False
                         continue
 
-                bloque_seleccionado, indice_origen = mover_bloque(
-                    mi_mazo, bloque_seleccionado, indice_origen, mx, my
-                )
+                bloque_seleccionado, indice_origen = mover_bloque(mi_mazo, bloque_seleccionado, 
+                                                    indice_origen, mx, my)
                 drag_en_progreso = False
 
             elif evento.type == pygame.MOUSEMOTION and drag_en_progreso:
                 posicion_mouse = evento.pos
 
-        # — Renderizado —
         pantalla.fill(VERDE_FONDO)
 
         for i_pila, pila in enumerate(mi_mazo["pilas_cuadro"]):

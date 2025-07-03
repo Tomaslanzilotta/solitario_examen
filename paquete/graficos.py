@@ -4,8 +4,10 @@ from paquete.audio import toggle_music
 # Colores y tamaño de pantalla
 NEGRO       = (  0,   0,   0)
 BLANCO      = (255, 255, 255)
-VERDE_FONDO = (  0, 100,   0)
+VERDE_FONDO = (  45, 62,   48)
+VERDE_CLARO = (111, 78, 55)
 AZUL        = (  0,   0, 255)
+DORADO = (255, 215, 0)
 
 ANCHO, ALTO = 1000, 700
 
@@ -32,9 +34,13 @@ def mostrar_menu(pantalla: pygame.Surface,
     fuente_boton  = pygame.font.SysFont("arial", 36)
 
     rect_jugar   = pygame.Rect(ANCHO//2 - 120, 260, 240, 60)
+    rect_ranking = pygame.Rect(ANCHO // 2 - 120, 340, 240, 60)
     rect_sonido  = pygame.Rect(ANCHO - 60, 20, 40, 40)
 
-    titulo_surf = fuente_titulo.render("Solitario Klondike", True, BLANCO)
+    fuente_boton = pygame.font.SysFont("arial", 36)
+
+
+    titulo_surf = fuente_titulo.render("Solitario Klondike", True, DORADO)
     en_menu = True
 
     while en_menu:
@@ -45,15 +51,14 @@ def mostrar_menu(pantalla: pygame.Surface,
         )
 
         # Botón "Iniciar juego"
-        pygame.draw.rect(pantalla, BLANCO, rect_jugar, border_radius=10)
-        txt_jugar = fuente_boton.render("Iniciar juego", True, NEGRO)
+        pygame.draw.rect(pantalla, VERDE_CLARO, rect_jugar, border_radius=10)
+        txt_jugar = fuente_boton.render("Iniciar juego", True, BLANCO)
         pantalla.blit(txt_jugar, (rect_jugar.x + 30, rect_jugar.y + 15))
 
         # Botón "Ver ranking"
-        rect_ranking = pygame.Rect(400, 420, 200, 50)
-        pygame.draw.rect(pantalla, AZUL, rect_ranking)
+        pygame.draw.rect(pantalla, VERDE_CLARO, rect_ranking, border_radius = 10)
         txt_rank = fuente_boton.render("Ver ranking", True, BLANCO)
-        pantalla.blit(txt_rank, rect_ranking.move(20, 10).topleft)
+        pantalla.blit(txt_rank, (rect_ranking.x +30, rect_ranking.y +15))
 
         # Icono de sonido según estado
         ruta_icono = RUTA_ON if musica_activada else RUTA_OFF
